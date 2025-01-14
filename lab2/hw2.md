@@ -96,7 +96,7 @@ Mount everest has the highest number of fatalities.
 **10. Write your data frame to a .csv file.**
 
 ```r
-write.csv(mountains, "mountains_data", row.names = FALSE)
+write.csv(mountains, "mountains_data.csv", row.names = FALSE)
 ```
 
 ## Knit and Upload
