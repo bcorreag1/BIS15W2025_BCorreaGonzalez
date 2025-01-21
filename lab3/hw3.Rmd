@@ -1,0 +1,89 @@
+---
+title: "Homework 3"
+author: "Type Your Name Here"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: yes
+---
+
+## Instructions
+Answer the following questions and/or complete the exercises in RMarkdown. Please embed all of your code and push the final work to your repository. Your report should be organized, clean, and run free from errors. Remember, you must remove the `#` for any included code chunks to run.  
+
+## Load the tidyverse
+```{r}
+library("tidyverse")
+options(scipen=999) # turn off scientific notation
+```
+
+## Data
+For the homework, we will use data about vertebrate home range sizes. The data are in the class folder and the reference is below.  
+
+**Database of vertebrate home range sizes.**. 
+Reference: Tamburello N, Cote IM, Dulvy NK (2015) Energy and the scaling of animal space use. The American Naturalist 186(2):196-211. http://dx.doi.org/10.1086/682070.  
+Data: http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1  
+
+**1. Load the data into a new object called `homerange`.**
+```{r}
+homerange <- read.csv("data/Tamburelloetal_HomeRangeDatabase.csv")
+```
+
+**2. What are the dimensions of the dataframe?**  
+```{r}
+dim(homerange)
+```
+
+**3. Are there any NA's in the dataframe? Try using summary to determine which variables have more or less NA's.**
+```{r}
+summary(homerange)
+glimpse(homerange)
+```
+From summary we can learn that preymass, log10.preymass, and PPMR have NA's. From glimpse we can learn that additionally to those three, prey.size.reference, alternative.mass.reference, and N also have NA's/
+
+**4. What are the names of the columns in the dataframe?**
+```{r}
+names(homerange)
+```
+
+**5. Based on the summary output, do you see anything in the data that looks strange? Think like a biologist and consider the variables.**  
+Under "mass" we can see that something has a minimum of 0g which makes no sense as nothing can weigh 0g. The max mass is 4000000g which is really high. Im also skeptical of the homerange size of 3550830977m2 which seems extremely high but I guess it would depend on how they measured.
+
+**6. The `min` and `max` functions can be used to find the minimum and maximum values in a vector. Use these functions to find the minimum and maximum values for the variable `mean.mass.g`.**  
+```{r}
+min(homerange$mean.mass.g)
+max(homerange$mean.mass.g)
+```
+
+**7. Change the class of the variables `taxon` and `order` to factors and display their levels.**  
+```{r}
+homerange$taxon <- as.factor(homerange$taxon)
+levels(homerange$taxon)
+```
+```{r}
+homerange$order <- as.factor(homerange$order)
+levels(homerange$order)
+```
+```{r}
+str(homerange)
+```
+
+**8. Use `select` to pull out the variables taxon and common.name.**  
+```{r}
+select(homerange, taxon, common.name)
+```
+
+**9. Use `filter` to pull out all mammals from the data.**
+```{r}
+filter(homerange, taxon=="mammals")
+```
+
+**10. What is the largest `mean.hra.m2` for mammals? This is a very large number! Which animal has this homerange? Look them up online and see if you can figure out why this number is so large.**
+```{r}
+max(homerange$mean.hra.m2)
+filter(homerange, mean.hra.m2=="3550830977")
+```
+The mammal, reindeer, appears to have a home range value of 3550830977m2. This number is very large to due to the areas in which reindeer live including the arctic tundra. In the arctic tundra food is sparse to reindeer must travel/migrate long distances to scavenge for food as they are herbivores and the arctic has seasonal vegetation. Additionally, food is also scarce for the predators of reindeer so they have to travel large distances to avoid the predators. 
+
+## Knit and Upload
+Please knit your work as a .pdf or .html file and upload to Canvas. Homework is due before the start of the next lab. No late work is accepted. Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
