@@ -1,0 +1,133 @@
+---
+title: "Homework 6"
+author: "Bryan Correa Gonzalez
+"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: yes
+---
+
+## Instructions
+Answer the following questions and/or complete the exercises in RMarkdown. Please embed all of your code and push the final work to your repository. Your report should be organized, clean, and run free from errors. Remember, you must remove the `#` for any included code chunks to run.  
+
+## Load the tidyverse
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+```
+
+## Load the superhero data
+Let's have a little fun with this one! We are going to explore data on superheroes. These are data taken from comic books and assembled by devoted fans. The include a good mix of categorical and continuous data.  Data taken from: https://www.kaggle.com/claudiodavi/superhero-set  
+
+Load the `heroes_information.csv` and `super_hero_powers.csv` data. Make sure the columns are cleanly named.
+```{r}
+superhero_info <- read_csv("data/heroes_information.csv", na = c("", "-99", "-")) %>% clean_names() %>% mutate(across(everything(), tolower))
+superhero_powers <- read_csv("data/super_hero_powers.csv", na = c("", "-99", "-")) %>% clean_names() %>% mutate(across(everything(), tolower))
+```
+
+1. For the superhero_info data, how many bad, good, and neutral superheros are there? Try using count() and/ or tabyl().
+```{r}
+superhero_info %>% 
+  count(alignment)
+```
+
+```{r}
+superhero_info %>% 
+  tabyl(alignment)
+```
+
+2. Notice that we have some bad superheros! Who are they? List their names below.  
+```{r}
+superhero_info %>% 
+  select (name, alignment) %>% 
+  filter(alignment == "bad")
+```
+
+```{r}
+
+```
+
+3. How many distinct "races" are represented in `superhero_info`?
+```{r}
+superhero_info %>% 
+  summarize(n_race=n_distinct(race, na.rm=T))
+```
+
+## Good and Bad
+4. Let's make two different data frames, one focused on the "good guys" and another focused on the "bad guys".
+```{r}
+good_guys <- filter(superhero_info, alignment == "good")
+bad_guys <- filter(superhero_info, alignment == "bad")
+```
+
+
+5. Who are the good Vampires?
+```{r}
+good_guys %>% 
+  filter(race == "vampire")
+```
+
+6. Who has the height advantage- bad guys or good guys? Convert their height to meters and sort from tallest to shortest.  
+
+The good guys appear to have to have the height advantage.
+
+```{r}
+good_guys %>% 
+  select(name, race, height) %>% 
+  mutate(height = as.numeric(height)) %>% 
+  mutate(height_meters = height/100) %>% 
+  arrange(desc(height_meters))
+```
+
+```{r}
+bad_guys %>% 
+  select(name, race, height) %>% 
+  mutate(height = as.numeric(height)) %>% 
+  mutate(height_meters = height/100) %>% 
+  arrange(desc(height_meters))
+```
+
+## `superhero_powers`
+Have a quick look at the `superhero_powers` data frame.  
+
+7. How many superheros have a combination of agility, stealth, super_strength, and stamina?
+```{r}
+best_supers <- superhero_powers %>% 
+  select(hero_names, agility, stealth, super_strength, stamina) %>% 
+  filter(agility == "true", stealth == "true", super_strength == "true", stamina == "true") %>% 
+  summarize(total = n()) 
+best_supers
+```
+
+8. Who is the most powerful superhero? Have a look at the code chunk below. Use the internet to annotate each line of code so you know how it works. It's OK to use AI to help you with this task.
+```{r}
+test <- superhero_powers %>%
+  # calls the superhero_powers df
+  mutate(across(-1, ~ ifelse(. == TRUE, 1, 0))) %>% 
+  # transforms all but the first column then checks if each data entry is "true" or "false". if true it will assign it a value of 1. if false it will assign it a value of 0. 
+  mutate(total_powers = rowSums(across(-1))) %>% 
+  # first it creates a new column calles "total_powers". then calculates the sum of all rows, excluding the first column for each super hero.
+  select(hero_names, total_powers) %>% 
+  # only selects and outputs the "hero_names" and "total_powers" columns
+  arrange(-total_powers)
+  # sorts the data set by "total_powers" from highest to lowest numerical values.
+```
+
+## Your Favorite
+9. Pick your favorite superhero and let's see their powers!  
+```{r}
+superhero_powers %>% 
+  filter(hero_names == "batman") %>% 
+  select(hero_names, where(~. == "true"))
+```
+
+10. Can you find your hero in the superhero_info data? Show their info!  
+```{r}
+superhero_info %>% 
+  filter(name == "batman")
+```
+
+## Knit and Upload
+Please knit your work as a .pdf or .html file and upload to Canvas. Homework is due before the start of the next lab. No late work is accepted. Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
