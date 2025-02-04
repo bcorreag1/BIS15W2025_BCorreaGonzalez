@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output:
   html_document: 
     theme: spacelab
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
@@ -83,10 +84,10 @@ fisheries %>%
 5. Based on the `asfis_species_name`, what are the top 5 most caught species? (note: "Osteichthyes" is not a species, it refers to unidentified fish. You should filter this one out.).
 ```{r}
 fisheries %>% 
-  select(asfis_species_name, catch) %>% 
+  select(asfis_species_number, asfis_species_name, catch) %>% 
   filter(asfis_species_name!= "Osteichthyes") %>% 
-  group_by(asfis_species_name) %>% 
-  summarize(total_catch = sum(catch, na.rm = TRUE)) %>% 
+  group_by(asfis_species_number, asfis_species_name) %>% #Proff included the number, dont know why.
+  summarize(total_catch = sum(catch, na.rm = TRUE), .groups = "keep") %>% 
   arrange(desc(total_catch)) %>% 
   head(,n=5)
 ```

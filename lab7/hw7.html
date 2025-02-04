@@ -613,20 +613,21 @@ most caught species? (note: “Osteichthyes” is not a species, it refers
 to unidentified fish. You should filter this one out.).</li>
 </ol>
 <pre class="r"><code>fisheries %&gt;% 
-  select(asfis_species_name, catch) %&gt;% 
+  select(asfis_species_number, asfis_species_name, catch) %&gt;% 
   filter(asfis_species_name!= &quot;Osteichthyes&quot;) %&gt;% 
-  group_by(asfis_species_name) %&gt;% 
-  summarize(total_catch = sum(catch, na.rm = TRUE)) %&gt;% 
+  group_by(asfis_species_number, asfis_species_name) %&gt;% #Proff included the number, dont know why.
+  summarize(total_catch = sum(catch, na.rm = TRUE), .groups = &quot;keep&quot;) %&gt;% 
   arrange(desc(total_catch)) %&gt;% 
   head(,n=5)</code></pre>
-<pre><code>## # A tibble: 5 × 2
-##   asfis_species_name    total_catch
-##   &lt;chr&gt;                       &lt;dbl&gt;
-## 1 Engraulis ringens          540739
-## 2 Theragra chalcogramma      473722
-## 3 Clupea harengus            264304
-## 4 Gadus morhua               217930
-## 5 Katsuwonus pelamis         194923</code></pre>
+<pre><code>## # A tibble: 5 × 3
+## # Groups:   asfis_species_number, asfis_species_name [5]
+##   asfis_species_number asfis_species_name    total_catch
+##   &lt;chr&gt;                &lt;chr&gt;                       &lt;dbl&gt;
+## 1 1210600208           Engraulis ringens          540739
+## 2 1480401601           Theragra chalcogramma      473722
+## 3 1210500105           Clupea harengus            264304
+## 4 1480400202           Gadus morhua               217930
+## 5 1750102501           Katsuwonus pelamis         194923</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li>For the species that was caught the most, which country had the
 highest catch?</li>
