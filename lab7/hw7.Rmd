@@ -47,18 +47,27 @@ anyNA(fisheries)
 ```
 
 2. How many countries are represented in the data? Provide a count and list their names.
+
 ```{r}
-fisheries %>% 
-  count(country)
+fisheries %>% # Proff's way. Gives clearer answers.
+  summarize(n_countries = n_distinct(country))
+fisheries$country %>% unique()
 ```
 
 ```{r}
-
+fisheries %>% #my way where the total amount of rows gives the count of total countries
+  count(country)
 ```
 
 3. Based on the `asfis_species_number`, how many different fish species were caught?
 ```{r}
-fisheries %>% 
+fisheries%>% # proff way.
+  mutate(asfis_species_number=as.factor(asfis_species_number)) %>%
+  summarize(n_taxa=n_distinct(asfis_species_number))
+```
+
+```{r}
+fisheries %>% #my way
   select(asfis_species_number) %>% 
   summarize(n_species=n_distinct(asfis_species_number))
 ```
@@ -66,50 +75,84 @@ fisheries %>%
 4. What is the total catch for each `isscaap_taxonomic_group` in the data set?
 ```{r}
 fisheries %>% 
-  group_by(isscaap_group_number) %>%
+  group_by(isscaap_taxonomic_group) %>%
   summarize(total_catch = sum(catch, na.rm = T)) %>% 
   arrange(-total_catch)
 ```
 
 5. Based on the `asfis_species_name`, what are the top 5 most caught species? (note: "Osteichthyes" is not a species, it refers to unidentified fish. You should filter this one out.).
 ```{r}
-
+fisheries %>% 
+  select(asfis_species_name, catch) %>% 
+  filter(asfis_species_name!= "Osteichthyes") %>% 
+  group_by(asfis_species_name) %>% 
+  summarize(total_catch = sum(catch, na.rm = TRUE)) %>% 
+  arrange(desc(total_catch)) %>% 
+  head(,n=5)
 ```
 
 6. For the species that was caught the most, which country had the highest catch?
 ```{r}
 fisheries %>% 
-  
+  select(country, asfis_species_name, catch) %>% 
+  filter(asfis_species_name == "Engraulis ringens") %>% 
+  group_by(country) %>% 
+  summarize(total_catch = sum(catch, na.rm = TRUE)) %>% 
+  arrange(desc(total_catch))
 ```
 
 7. Which country had the largest overall catch between the years 2002-2012?
 ```{r}
-
+fisheries %>% 
+  select(country, year, catch) %>% 
+  filter(year>=2002 & year<=2012) %>% 
+  group_by(country) %>% 
+  summarize(total_catch = sum(catch, na.rm= TRUE)) %>% 
+  arrange(desc(total_catch))
 ```
 
 8. Which country had the largest catch in a single year? What year was it? 
 ```{r}
-
+fisheries %>% 
+  select(country, catch, year) %>% 
+  group_by(country, year) %>% 
+  summarize(catch_total = sum(catch, na.rm=TRUE), .group = "keep") %>% 
+  arrange(desc(catch_total))
 ```
 
 9. Fishing practices for sharks, rays, chimaeras and other cartilaginous fish (group 38) are of particular concern due to their conservation status. Make a new dataframe `sharks` that only contains data on this group. 
 ```{r}
-
+sharks <- fisheries %>% 
+  filter(isscaap_group_number == "38")
+sharks
 ```
 
 10. Using the `sharks` dataframe, use `mutate()` to create a new column called `fishing_pressure` that is based on the total catch. If the total catch is greater than 75, the fishing pressure is considered "high", otherwise it is considered "moderate".
+
 ```{r}
-
+sharks <- sharks %>% #Proffs way
+  mutate(fishing_pressure=ifelse(catch>75, "high", "moderate"))
+sharks
 ```
-
 11. For sharks, how does the average catch differ between high and moderate fishing pressure?
 ```{r}
-
+sharks %>% 
+  filter(catch >0 | catch!="NA") %>% #Proff included this to exclude NA.
+  group_by(fishing_pressure) %>% 
+  summarise(average_catch = mean(catch, na.rm = TRUE), .groups = "drop")
 ```
 
 12. Perform one analysis of your choice on the fisheries dataframe that includes a minimum of three lines of code and two functions. Write a seentence or two that explains the intent of your code.
-```{r}
 
+Which country has caught the highest amount of the species, Rajiformes?
+
+```{r}
+fisheries %>% 
+  select(country, asfis_species_name, catch) %>% 
+  filter(asfis_species_name == "Rajiformes") %>% 
+  group_by(country) %>% 
+  summarize(total_catch = sum(catch, na.rm= TRUE)) %>% 
+  arrange(desc(total_catch))
 ```
 
 ## Push your final code to GitHub!

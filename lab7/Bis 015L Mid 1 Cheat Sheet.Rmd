@@ -1,0 +1,178 @@
+---
+title: "BIS 015L Mid 1 Cheat Sheet"
+output: 
+  html_document:
+    theme: spacelab
+    toc: yes
+name: "Bryan Correa Gonzalez"
+---
+
+Good Luck!
+(Lets hope everything we need is in this document)
+
+## Using Objects
+
+-   An object can be defined as a variable such as X.
+-   look at lab 2.1 if still confused.
+
+x <- 5 .
+This is the same thing as saying "x gets 5" or X == 5.
+
+BUT DO NOT USE = as its basic and not used.
+
+x .
+This "prints" the object.
+Doing so will just show whatever it is getting.
+
+x + y .
+you can add objects together or subtract or divide or do whatver you want with them.
+anything can "get" can a value.
+its also how we assign data sets.
+
+### Nomenclature is important, including order of operations.
+
+-   look at lab 2.1
+-   we dont want to use names for objects that will confuse R. R has embedded functions that can contradict the objects you are assigning.
+
+we can use 'c' for concatenence which essentially helps us assign a list.
+
+for example if we want the mean of 3 numbers we can do mean(c(31,24,55))
+
+### Classes of Data
+
+There are 4 classes of data: logical, numeric, integer, and character.
+
+to check what class type and object is we can use: class() is. or as.
+
+functions allow us to clarify or change the class of an object
+
+is.integer() # is my object an integer?
+
+as.integer() # set my object as integer.
+
+To define a numerical vector my_vector <- c(10, 20, 30) my_vector_sequence <- c(1:100).
+This is used to define a range.
+
+To define a character vector days_of_the_week \<- c("Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday", "Sunday")
+
+#### Identifying vector elements
+
+We can use `[]` to pull out elements in a vector.
+We just need to specify their position in the vector; i.e. day 3 is Wednesday.
+
+days_of_the_week[3] my_vector_sequence[10]
+
+### Operators that can be used within vectors.
+
+We can use operators such as <, >, ==, <==, etc.
+Show all values in `my_vector_sequence` that are less than or equal to 10.
+
+## Data Frames
+
+The data frame is the most common way to organize data within R.
+A data frame can store data of many different classes.
+We usually don't build data frames in RStudio, but this example will show you how they are structured.
+
+Sex <- c("male", "female", "male"). characters
+
+Length <- c(3.2, 3.7, 3.4). numberical
+
+Weight <- c(2.9, 4.0, 3.1). numerical
+
+c(1,2,3): Creates a vector.
+
+matrix(1:9, nrow=3): Creates a matrix.
+
+list(a=1, b="text", c=TRUE): Creates a list.
+
+data.frame([]=c(1,2,3), []=c("A","B","C")): Creates a dataframe.
+
+### Functions to give basics of DF
+
+head(df): View first 6 rows of a dataframe.
+
+tail(df): View last 6 rows of a dataframe.
+
+dim(df): Get dimensions (rows, columns) of a dataframe.
+
+summary(df): Summarizes statistics of dataframe.
+
+glimpse(df): gives a bit more than just a summary str(df): View structure of a dataframe.
+
+distinct(df, []): get unique values from column
+
+rename(df, new_name = old_name): rename a column
+
+We can combine data frames together
+
+### Dealing with Missing Data or NA's.
+
+is.na(my_missing): gives a logical response
+
+anyNA(my_missing): gives a logical response
+
+drop_na(df): remove rows with NA values
+
+replace_na(df, list([] = 0)): Replace NA calues with another value
+
+
+### Using the Select Function
+
+select([], []): Select specific columns.
+
+select(starts_with("prefix")): Select columns starting with "prefix".
+
+filter(df, col1 %in% c("A", "B", "C")): Keep rows where col1 is one of "A", "B", or "C".
+
+select(ends_with("suffix")): Select columns ending with "suffix"
+
+### Using the Filter Function
+
+filter([] > 10): Select rows where col1 is greater than 10.
+
+filter([] == "A"): Select rows where col1 is "A".
+
+filter([] > 10 & [] < 5): Multiple conditions using AND.
+
+filter(between(col1, 10, 20)): Keep rows where col1 is between 10 and 20.
+
+filter(df, near(col1, 100, tol = 5)): Keep rows where col1 is close to 100 within a tolerance of 5.
+
+[]= columns
+
+### Aranging Data
+
+arrange([])sort the dataframe by the column chose
+
+arrange(desc[])). sort the df in descending order. can also (-)
+
+arrange(desc(col1), col2): Sort by multiple columns in different orders.
+
+### Mutating Columns
+
+mutate(new_[] = []*2)): create a new column based of the given syntax
+
+mutate(new_[] = if_else([] > 10, "High", "Low")): create a new column based on a if_else condition.
+
+mutate(new_col = round(col1, 2)): Round values in a column.
+
+mutate(df, new_col = case_when( col1 < 10 ~ "Low", col1 >= 10 & col1 < 20 ~ "Medium", TRUE ~ "High")): Categorize values conditionally.
+
+Example:If greater than 10 then label as high, if else then label it as low.
+
+### Stats of Df
+summarize(df, mean_col = mean(col1, na.rm = TRUE)): Calculate mean while handling NA values.
+
+summarize(df, n_unique = n_distinct(col1)): Count the number of unique values in a column.
+
+count(df, col1, sort = TRUE): Count occurrences and sort by frequency.
+
+count(df, col1, wt = col2): Weighted count based on another column.
+
+df %>% summarise(across(where(is.numeric), mean, na.rm = TRUE)): Get means for all numeric columns.
+
+### Grouping Data
+
+group_by([]): group by column
+
+summarize(group_by([]), mean_column = mean([])): apply summary stats to groups
