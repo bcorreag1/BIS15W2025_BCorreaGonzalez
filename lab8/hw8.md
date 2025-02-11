@@ -1,7 +1,6 @@
 ---
 title: "Homework 8"
-author: "Joel Ledford"
-name: "Bryan Correa Gonzalez"
+author: "Bryan Correa Gonzalez"
 date: "2025-02-11"
 output:
   html_document: 
