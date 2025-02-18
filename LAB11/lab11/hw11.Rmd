@@ -19,6 +19,7 @@ In the `data` folder, you will find data about shark incidents in California bet
 ```{r message=FALSE, warning=FALSE}
 library("tidyverse")
 library("janitor")
+install.packages("naniar")
 library("naniar")
 ```
 
@@ -37,6 +38,7 @@ The missing values are represented as NA's but there also some "Not counted" in 
 glimpse(sharks)
 summary(sharks)
 ```
+
 ```{r}
 miss_var_summary(sharks)
 ```
@@ -45,7 +47,8 @@ miss_var_summary(sharks)
 2. Notice that there are some incidents identified as "NOT COUNTED". These should be removed from the data because they were either not sharks, unverified, or were provoked. It's OK to replace the `sharks` object.
 
 ```{r}
-sharks <- 
+sharks <- sharks %>%
+  mutate(incident_num = incident_num != "Not Counted")
 ```
 
 
