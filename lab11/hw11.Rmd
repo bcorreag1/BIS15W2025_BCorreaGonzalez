@@ -1,0 +1,207 @@
+---
+title: "Homework 11"
+author: "Bryan Correa Gonzalez"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+  keep_md: True
+---
+
+## Instructions
+Answer the following questions and complete the exercises in RMarkdown. Please embed all of your code and push your final work to your repository. Your final lab report should be organized, clean, and run free from errors. Remember, you must remove the `#` for the included code chunks to run. Be sure to add your name to the author header above.  
+
+Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!    
+
+## Background
+In the `data` folder, you will find data about shark incidents in California between 1950-2022. The [data](https://catalog.data.gov/dataset/shark-incident-database-california-56167) are from: State of California- Shark Incident Database.   
+
+## Load the libraries
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+library("naniar")
+```
+
+## Load the data
+Run the following code chunk to import the data.
+```{r message=FALSE, warning=FALSE}
+sharks <- read_csv("data/SharkIncidents_1950_2022_220302.csv") %>% clean_names()
+```
+
+## Questions
+1. Start by doing some data exploration using your preferred function(s). What is the structure of the data? Where are the missing values and how are they represented?  
+
+The missing values are represented as NA's but there also some "Not counted" in the incident number which will have to be converted to NA. 
+
+```{r}
+glimpse(sharks)
+summary(sharks)
+```
+```{r}
+miss_var_summary(sharks)
+```
+
+
+2. Notice that there are some incidents identified as "NOT COUNTED". These should be removed from the data because they were either not sharks, unverified, or were provoked. It's OK to replace the `sharks` object.
+
+```{r}
+sharks <- sharks %>% 
+  filter(incident_num != "NOT COUNTED")
+```
+
+
+3. Are there any "hotspots" for shark incidents in California? Make a table and plot that shows the total number of incidents per county. Which county has the highest number of incidents?
+
+The county with the highest number of incidents is San Diego.
+
+
+```{r}
+sharks %>% 
+  select(incident_num, county) %>% 
+  group_by(county) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  arrange(desc(n_incident))
+          
+```
+
+```{r}
+sharks %>% 
+  select(incident_num, county) %>% 
+  group_by(county) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  ggplot(aes(x=reorder(county,n_incident), y=n_incident, fill= county)) +
+  geom_col()+
+  labs(,title= "Shark Incidents per County",
+       x="County",
+       y= "# of Shark Incidents") + 
+  theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
+  coord_flip()
+```
+
+4. Are there months of the year when incidents are more likely to occur? Make a table and a plot that shows the total number of incidents by month. Which month has the highest number of incidents?  
+
+October has the highest number of incidents.
+
+```{r}
+sharks %>% 
+  select(incident_num, month) %>% 
+  group_by(month) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  arrange(desc(n_incident))
+```
+
+
+```{r}
+sharks %>% 
+  mutate(month = as.character(month)) %>% 
+  select(incident_num, month) %>% 
+  group_by(month) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  ggplot(aes(x=reorder(month, n_incident), y=n_incident, fill= month))+
+  geom_col()+
+  labs(,title= "Shark Incidents per Month",
+       x="Month",
+       y= "# of Shark Incidents") + 
+  theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
+  coord_flip()
+```
+
+
+
+5. How do the number and types of injuries compare by county? Make a table that shows the number of injury types by county. Which county has the highest number incidents?
+
+San Diego has the most injuries with a total of 14 injuries. 
+
+```{r}
+shark_injury_by_county <- sharks %>% 
+  select(county, injury, incident_num) %>%
+  filter(injury != "none") %>% 
+  group_by(county, injury) %>% 
+  summarize(n_incidents = n_distinct(incident_num)) %>%
+  mutate(total_incidents = sum(n_incidents)) %>% 
+  arrange(desc(total_incidents))
+shark_injury_by_county
+```
+
+
+6. Use the table from #5 to make a plot that shows the total number of incidents by county.
+```{r}
+shark_injury_by_county %>% 
+  select(county, n_incidents) %>% 
+  group_by(county) %>% 
+  summarize(total_incidents = sum(n_incidents)) %>% 
+  ggplot(aes(x=reorder(county,total_incidents), y=total_incidents, fill = county))+
+  geom_col()+
+  labs(title= "Total Injury Incidents per County",
+       x="County",
+       y= "Total Injury Count") + 
+  theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
+  coord_flip()
+```
+
+7. In the data, `mode` refers to a type of activity. Which activity is associated with the highest number of incidents?
+
+```{r}
+sharks %>% 
+  select(incident_num, mode) %>% 
+  group_by(mode) %>% 
+  summarize(n_injuries = n_distinct(incident_num)) %>% 
+  arrange(desc(n_injuries))
+```
+
+
+8. Make a plot that compares the number of incidents by activity.
+
+```{r}
+sharks %>% 
+  select(incident_num, mode) %>% 
+  group_by(mode) %>% 
+  summarize(n_injuries = n_distinct(incident_num)) %>% 
+  ggplot(aes(x=reorder(mode, n_injuries), y=(n_injuries), fill = mode)) +
+   geom_col()+
+  labs(,title= "Total Injury Incidents by Mode",
+       x="Mode",
+       y= "Total Injury Incident") + 
+  theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
+  coord_flip()
+```
+
+
+9. Which shark species is involved in the highest number of incidents?
+
+```{r}
+sharks %>% 
+  select(incident_num, species) %>% 
+  group_by(species) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  arrange(desc(n_incident))
+```
+
+
+10. Are all incidents involving Great White's fatal? Make a plot that shows the number and types of incidents for Great White's only.  
+
+```{r}
+sharks %>% 
+  select(incident_num, species, injury) %>% 
+  filter(species == "White") %>% 
+  group_by(injury) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  arrange(desc(n_incident))
+```
+
+```{r}
+sharks %>% 
+  select(incident_num, species, injury) %>% 
+  filter(species == "White") %>% 
+  group_by(injury) %>% 
+  summarize(n_incident = n_distinct(incident_num)) %>% 
+  ggplot(aes(x=reorder(injury, n_incident), y=n_incident, fill = injury)) +
+  geom_col()+
+  labs(,title= "Total Incidents Per Injury by Great Whites",
+       x="Injury Type",
+       y= "Total Injury Incident") + 
+  theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
+  coord_flip()
+```
+C:/Users/bryan/OneDrive/Desktop/BIS 015L HW9/BIS15W2025_BCorreaGonzalez/LAB11/lab11/hw11.Rmd
