@@ -100,9 +100,9 @@ sharks %>%
   summarize(n_incident = n_distinct(incident_num)) %>% 
   ggplot(aes(x=reorder(month, n_incident), y=n_incident, fill= month))+
   geom_col()+
-  labs(,title= "Shark Incidents per Month",
+  labs(,title= "Injury Incidents per Month due to Sharks",
        x="Month",
-       y= "# of Shark Incidents") + 
+       y= "# of Injuries") + 
   theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
   coord_flip()
 ```
@@ -141,6 +141,8 @@ shark_injury_by_county %>%
 ```
 
 7. In the data, `mode` refers to a type of activity. Which activity is associated with the highest number of incidents?
+
+Surfing/Boarding has the highest number of incidents.
 
 ```{r}
 sharks %>% 
@@ -204,4 +206,3 @@ sharks %>%
   theme(plot.title=element_text(size=rel(1.5),hjust=0.5))+
   coord_flip()
 ```
-C:/Users/bryan/OneDrive/Desktop/BIS 015L HW9/BIS15W2025_BCorreaGonzalez/LAB11/lab11/hw11.Rmd
