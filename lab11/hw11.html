@@ -11,7 +11,7 @@
 
 <meta name="author" content="Bryan Correa Gonzalez" />
 
-<meta name="date" content="2025-02-18" />
+<meta name="date" content="2025-02-19" />
 
 <title>Homework 11</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Homework 11</h1>
 <h4 class="author">Bryan Correa Gonzalez</h4>
-<h4 class="date">2025-02-18</h4>
+<h4 class="date">2025-02-19</h4>
 
 </div>
 
@@ -556,7 +556,8 @@ by month. Which month has the highest number of incidents?</li>
 table that shows the number of injury types by county. Which county has
 the highest number incidents?</li>
 </ol>
-<p>San Diego has the most injuries with a total of 14 injuries.</p>
+<p>San Diego has the most incidents that involved an injury with a total
+of 14 incidents.</p>
 <pre class="r"><code>shark_injury_by_county &lt;- sharks %&gt;% 
   select(county, injury, incident_num) %&gt;%
   filter(injury != &quot;none&quot;) %&gt;% 
@@ -637,6 +638,7 @@ activity is associated with the highest number of incidents?</li>
 <li>Which shark species is involved in the highest number of
 incidents?</li>
 </ol>
+<p>Great White Sharks.</p>
 <pre class="r"><code>sharks %&gt;% 
   select(incident_num, species) %&gt;% 
   group_by(species) %&gt;% 
@@ -657,6 +659,8 @@ incidents?</li>
 <li>Are all incidents involving Great White’s fatal? Make a plot that
 shows the number and types of incidents for Great White’s only.</li>
 </ol>
+<p>Not all incidents involving Great Whites are fatal, the majority
+don’t even result in an injury.</p>
 <pre class="r"><code>sharks %&gt;% 
   select(incident_num, species, injury) %&gt;% 
   filter(species == &quot;White&quot;) %&gt;% 

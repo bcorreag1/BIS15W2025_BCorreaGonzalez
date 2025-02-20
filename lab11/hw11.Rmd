@@ -107,11 +107,9 @@ sharks %>%
   coord_flip()
 ```
 
-
-
 5. How do the number and types of injuries compare by county? Make a table that shows the number of injury types by county. Which county has the highest number incidents?
 
-San Diego has the most injuries with a total of 14 injuries. 
+San Diego has the most incidents that involved an injury with a total of 14 incidents. 
 
 ```{r}
 shark_injury_by_county <- sharks %>% 
@@ -172,6 +170,8 @@ sharks %>%
 
 9. Which shark species is involved in the highest number of incidents?
 
+Great White Sharks.
+
 ```{r}
 sharks %>% 
   select(incident_num, species) %>% 
@@ -181,7 +181,9 @@ sharks %>%
 ```
 
 
-10. Are all incidents involving Great White's fatal? Make a plot that shows the number and types of incidents for Great White's only.  
+10. Are all incidents involving Great White's fatal? Make a plot that shows the number and types of incidents for Great White's only.
+
+Not all incidents involving Great Whites are fatal, the majority don't even result in an injury. 
 
 ```{r}
 sharks %>% 
