@@ -70,7 +70,7 @@ sharks %>%
   select(incident_num, county) %>% 
   group_by(county) %>% 
   summarize(n_incident = n_distinct(incident_num)) %>% 
-  ggplot(aes(x=reorder(county,n_incident), y=n_incident, fill= county)) +
+  ggplot(aes(x=reorder(county,n_incident), y=n_incident)) +
   geom_col()+
   labs(,title= "Shark Incidents per County",
        x="County",
@@ -98,7 +98,7 @@ sharks %>%
   select(incident_num, month) %>% 
   group_by(month) %>% 
   summarize(n_incident = n_distinct(incident_num)) %>% 
-  ggplot(aes(x=reorder(month, n_incident), y=n_incident, fill= month))+
+  ggplot(aes(x=reorder(month, n_incident), y=n_incident))+
   geom_col()+
   labs(,title= "Injury Incidents per Month due to Sharks",
        x="Month",
@@ -113,12 +113,14 @@ San Diego has the most incidents that involved an injury with a total of 14 inci
 
 ```{r}
 shark_injury_by_county <- sharks %>% 
-  select(county, injury, incident_num) %>%
+  select(county, injury) %>%
   filter(injury != "none") %>% 
   group_by(county, injury) %>% 
-  summarize(n_incidents = n_distinct(incident_num)) %>%
-  mutate(total_incidents = sum(n_incidents)) %>% 
-  arrange(desc(total_incidents))
+  summarise(total=n(), .groups = 'keep') %>% 
+  pivot_wider(names_from = injury,
+              values_from = total) %>% 
+  mutate(total=sum(minor, major, fatal, na.rm=T)) %>% 
+  arrange(desc(total))
 shark_injury_by_county
 ```
 
@@ -126,10 +128,7 @@ shark_injury_by_county
 6. Use the table from #5 to make a plot that shows the total number of incidents by county.
 ```{r}
 shark_injury_by_county %>% 
-  select(county, n_incidents) %>% 
-  group_by(county) %>% 
-  summarize(total_incidents = sum(n_incidents)) %>% 
-  ggplot(aes(x=reorder(county,total_incidents), y=total_incidents, fill = county))+
+  ggplot(aes(x=reorder(county,total), y=total))+
   geom_col()+
   labs(title= "Total Injury Incidents per County",
        x="County",
@@ -158,7 +157,7 @@ sharks %>%
   select(incident_num, mode) %>% 
   group_by(mode) %>% 
   summarize(n_injuries = n_distinct(incident_num)) %>% 
-  ggplot(aes(x=reorder(mode, n_injuries), y=(n_injuries), fill = mode)) +
+  ggplot(aes(x=reorder(mode, n_injuries), y=(n_injuries))) +
    geom_col()+
   labs(,title= "Total Injury Incidents by Mode",
        x="Mode",
@@ -200,7 +199,7 @@ sharks %>%
   filter(species == "White") %>% 
   group_by(injury) %>% 
   summarize(n_incident = n_distinct(incident_num)) %>% 
-  ggplot(aes(x=reorder(injury, n_incident), y=n_incident, fill = injury)) +
+  ggplot(aes(x=reorder(injury, n_incident), y=n_incident)) +
   geom_col()+
   labs(,title= "Total Incidents Per Injury by Great Whites",
        x="Injury Type",

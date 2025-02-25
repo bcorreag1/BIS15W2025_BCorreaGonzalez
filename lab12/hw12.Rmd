@@ -6,7 +6,6 @@ output:
   html_document:
     theme: spacelab
     toc: no
-    keep_md: True
 ---
 
 ```{r setup, include=FALSE}
