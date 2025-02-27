@@ -33,7 +33,6 @@ register_stadiamaps("aa2920a3-11e4-475e-82c1-18552c632fd2", write = FALSE)
 1. Load the `grizzly` data and evaluate its structure.  
 ```{r}
 grizzly <- read.csv("data/bear-sightings.csv")
-
 ```
 
 ```{r}
