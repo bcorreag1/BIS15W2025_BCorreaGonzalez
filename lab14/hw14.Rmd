@@ -1,11 +1,12 @@
 ---
 title: "Homework 14"
-author: "Key"
+author: "Bryan Correa Gonzalez"
 date: "`r Sys.Date()`"
 output:
   html_document:
     theme: spacelab
     toc: no
+runtime: shiny
 ---
 
 ## Instructions
@@ -29,26 +30,118 @@ msleep <- msleep
 ```
 
 1. Explore the data set. What are the column names?
-```{r}
 
+The column names are  "name"         "genus"        "vore"         "order"        "conservation"
+ "sleep_total"  "sleep_rem"    "sleep_cycle"  "awake"  "brainwt" "bodywt"
+
+```{r}
+str(msleep)
+```
+```{r}
+names(msleep)
 ```
 
 2. Make a boxplot of the total sleep time for each type of vore diet. Try using some aesthetics to make the plot look nice, including a fill by vore.
 ```{r}
-
+msleep %>% 
+  select(vore, sleep_total) %>% 
+  na.omit() %>% 
+  group_by(vore) %>% 
+  ggplot(aes(x=vore, y=sleep_total, fill = vore))+
+  geom_boxplot()+
+  labs(title="Sleep Total Per Vore",
+       x="Vore",
+       y="Sleep_Total")
+      
 ```
 
 3. The boxplot is fine, but we can build in reactivity so that every variable related to sleep can be explored. These variables include: sleep_total, sleep_rem, sleep_cycle, and awake. Create a shiny app that allows the user to select the variable of interest and then displays a boxplot by type of vore.
 ```{r, eval=F, echo=T}
+library(shiny)
 
+ui <- fluidPage(
+   selectInput("x",
+                  "Select X variable",
+                  choices=c("vore"), 
+                  selected = "vore"),
+    selectInput("y",
+                  "Select Y variable",
+                  choices=c("sleep_total","sleep_rem","sleep_cycle","awake"), 
+                  selected = "sleep_total"),
+    plotOutput("plot", width = "500px", height= "400px")
+)
+
+server <- function(input, output, session) {
+   output$plot <- renderPlot({
+            
+            msleep %>% 
+            na.omit() %>% 
+            ggplot(
+                  aes_string(x=input$x,y=input$y, fill=input$x))+
+              geom_boxplot(position="dodge", alpha=0.8, color="black")
+          })
+}
+
+shinyApp(ui, server)
 ```
 
 4. Make a density plot that shows the distribution of the total sleep time for each type of vore diet. Try using some aesthetics to make the plot look nice, including a fill by vore.
 ```{r}
-
+msleep %>% 
+  select(vore, sleep_total) %>% 
+  na.omit() %>% 
+  group_by(vore) %>% 
+  ggplot(aes(x=sleep_total, fill=vore))+
+  geom_density(alpha=0.5)+
+  labs(title="Total Sleep Time per Vore",
+      x = "Total Sleep",
+      y= "Density")
 ```
 
 5. The density plot is fine, but we can build in reactivity so that the user can select each vore type. Create a shiny app that allows the user to select the vore type of interest and then displays a density plot of the total sleep time.
-```{r, eval=F, echo=T}
 
+```{r}
+ui <- fluidPage(    
+  
+  #shinythemes::themeSelector(),  # <--- Add this somewhere in the UI
+  theme = shinytheme("cerulean"),
+  
+  titlePanel("Sleep Total By Vore"), # give the page a title
+  
+  # generate a row with a sidebar
+  sidebarLayout(      
+    
+  # define the sidebar with one input
+  sidebarPanel(
+  selectInput("vore", "Select Vore of Interest:", 
+              choices=c("carni", "omni", "herbi","insecti"), 
+              selected = "vore"),
+  hr(),
+  helpText("Reference: V. M. Savage and G. B. West. A quantitative, theoretical framework for understanding mammalian sleep. Proceedings of the National Academy of Sciences, 104 (3):1051-1056, 2007.")),
+    
+  # create a spot for the barplot
+  mainPanel(
+  plotOutput("vorePlot"))
+  )
+  )
+
+  # define a server for the Shiny app
+  server <- function(input, output, session) {
+  
+  # this stops the app upon closing
+  session$onSessionEnded(stopApp)
+  
+  # fill in the spot we created for a plot
+  output$vorePlot <- renderPlot({
+    
+    msleep %>% 
+    filter(vore == input$vore) %>% 
+    ggplot(aes(x=sleep_total)) + 
+    geom_density()+
+    stat_density(color="black", fill="steelblue", alpha=0.6)
+  })
+  }
+
+shinyApp(ui, server)
 ```
+
