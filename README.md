@@ -1,3 +1,20 @@
-# BIS15W2025_BCorreaGonzalez
-Hello my name is Bryan Correa Gonzalez! I am a 4th year systems and synthetic biology major.
-Feel free to contact me at bcorreagonzalez@ucdavis.edu.
+BIS 015L - Introduction to R
+About This Repository
+Welcome! This repository contains my coursework and projects for BIS 015L: Introduction to R at the University of California, Davis. I am using this space to document my journey in learning R and applying it to biological data analysis.
+
+About Me
+👋 Name: Bryan Correa Gonzalez
+🎓 Major: Systems and Synthetic Biology
+🏫 University: UC Davis
+🔬 Interests: Cancer biology, bioinformatics, and integrating R into lab research.
+
+I am particularly interested in using R for data visualization, statistical analysis, and bioinformatics workflows to enhance my understanding of biological systems, especially in cancer research.
+
+Repository Contents
+Assignments: Weekly assignments and exercises from BIS 015L.
+Projects: Personal projects exploring biological data analysis using R.
+Notes: Key takeaways from the course and useful R resources.
+Contact
+📧 Feel free to reach out if you have any questions or want to collaborate!
+Email: bcorreagonzalez@ucdavis.edu
+
