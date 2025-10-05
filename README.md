@@ -15,11 +15,8 @@ I am particularly interested in using R for data visualization, statistical anal
 
 Repository Contents
 
-Assignments: Weekly assignments and exercises from BIS 015L.
-
-Projects: Personal projects exploring biological data analysis using R.
-
-Notes: Key takeaways from the course and useful R resources.
+Labs: Each Lab folder contains the weekly notes and excercises that we would complete. 
+Midterms: Exams that were taken.
 
 Contact
 📧 Feel free to reach out if you have any questions or want to collaborate!
